@@ -1,0 +1,159 @@
+https://replit.com/@mason12467/Writing-Classes-Lab-1-Mason-Conner
+
+public class Main {
+
+    public static void main(String[] args) {
+        // Create and set an Auto policy object
+        Auto a = new Auto("Jerry", "Seinfeld", "Chevy", "Malibu", 10000.0, 50000.0);
+
+        // Compute commission
+        a.computeCommission();
+
+        // Print auto policy
+        System.out.println(a);
+
+        // Create and set a Home policy object
+        Home h = new Home();
+        h.setFirstName("Elaine");
+        h.setLastName("Benes");
+        h.setContents(5000);
+        h.setDwelling(32000);
+        h.setFootage(4000);
+        h.setLiability(10000);
+
+        // Compute commission
+        h.computeCommission();
+
+        // Print home policy
+        System.out.println(h);
+
+        // Create and set a Life policy object
+        Life l = new Life("Cosmo", "Kramer", 35, 50000);
+
+        // Compute commission
+        l.computeCommission();
+
+        // Print life policy
+        System.out.println(l);
+
+        // Test getters
+        System.out.println("Get life firstName: " + l.getFirstName());
+        System.out.println("Get life lastName: " + l.getLastName());
+        System.out.println("Get life age: " + l.getAge());
+        System.out.println("Get life term: " + l.getTerm());
+    }
+
+    // Definition of Auto class
+    static class Auto {
+        private String firstName;
+        private String lastName;
+        private String make;
+        private String model;
+        private double value;
+        private double liability;
+
+        public Auto(String firstName, String lastName, String make, String model, double value, double liability) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.make = make;
+            this.model = model;
+            this.value = value;
+            this.liability = liability;
+        }
+
+        public void computeCommission() {
+            // Compute commission logic here
+        }
+
+        @Override
+        public String toString() {
+            return "Auto Policy [FirstName=" + firstName + ", LastName=" + lastName + 
+                ", Make=" + make + ", Model=" + model + ", Value=" + value + ", Liability=" + liability + "]";
+        }
+    }
+
+    // Definition of Home class
+    static class Home {
+        private String firstName;
+        private String lastName;
+        private double contents;
+        private double dwelling;
+        private double footage;
+        private double liability;
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public void setContents(double contents) {
+            this.contents = contents;
+        }
+
+        public void setDwelling(double dwelling) {
+            this.dwelling = dwelling;
+        }
+
+        public void setFootage(double footage) {
+            this.footage = footage;
+        }
+
+        public void setLiability(double liability) {
+            this.liability = liability;
+        }
+
+        public void computeCommission() {
+            // Compute commission logic here
+        }
+
+        @Override
+        public String toString() {
+            return "Home Policy [FirstName=" + firstName + ", LastName=" + lastName + 
+                ", Contents=" + contents + ", Dwelling=" + dwelling + ", Footage=" + footage + ", Liability=" + liability + "]";
+        }
+    }
+
+    // Definition of Life class
+    static class Life {
+        private String firstName;
+        private String lastName;
+        private int age;
+        private double term;
+
+        public Life(String firstName, String lastName, int age, double term) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.age = age;
+            this.term = term;
+        }
+
+        public void computeCommission() {
+            // Compute commission logic here
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        } 
+
+        public int getAge() {
+            return age;
+        }
+
+        public double getTerm() {
+            return term;
+        }
+
+        @Override
+        public String toString() {
+            return "Life Policy [FirstName=" + firstName + ", LastName=" + lastName + 
+                ", Age=" + age + ", Term=" + term + "]";
+        }
+    }
+}
