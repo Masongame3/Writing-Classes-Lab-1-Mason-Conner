@@ -1,0 +1,286 @@
+https://replit.com/@mason12467/Unit-4-Commission-Calculator-with-Inheritance-Mason-Conner#src/main/java/Driver.java
+
+Auto.java
+public class Auto {
+    private String firstName;
+    private String lastName;
+    private String make;
+    private String model;
+    private double liability;
+    private double collision;
+
+    public Auto(String firstName, String lastName, String make, String model, double liability, double collision) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.make = make;
+        this.model = model;
+        this.liability = liability;
+        this.collision = collision;
+    }
+
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public String getMake() { return make; }
+    public String getModel() { return model; }
+    public double getLiability() { return liability; }
+    public double getCollision() { return collision; }
+
+    @Override
+    public String toString() {
+        return "Auto Policy\n-----------\n" +
+                "Name: " + firstName + " " + lastName + "\n" +
+                "Make: " + make + "\n" +
+                "Model: " + model + "\n" +
+                "Liability: $" + String.format("%,.2f", liability) + "\n" +
+                "Collision: $" + String.format("%,.2f", collision) + "\n";
+    }
+
+    public double computeCommission() {
+        return liability * 0.1 + collision * 0.2;
+    }
+}
+
+CommissionCalculator.java 
+public class CommissionCalculator {
+    private Auto autoPolicy;
+    private Home homePolicy;
+    private Life lifePolicy;
+
+    public void setAutoPolicy(Auto autoPolicy) {
+        this.autoPolicy = autoPolicy;
+    }
+
+    public void setHomePolicy(Home homePolicy) {
+        this.homePolicy = homePolicy;
+    }
+
+    public void setLifePolicy(Life lifePolicy) {
+        this.lifePolicy = lifePolicy;
+    }
+
+    public String computeAutoCommission() {
+        if (autoPolicy == null) {
+            return "No auto policy entered.";
+        }
+        double commission = autoPolicy.computeCommission();
+        return autoPolicy.toString() + "Commission: $" + String.format("%,.2f", commission) + "\n";
+    }
+
+    public String computeHomeCommission() {
+        if (homePolicy == null) {
+            return "No home policy entered.";
+        }
+        double commission = homePolicy.computeCommission();
+        return homePolicy.toString() + "Commission: $" + String.format("%,.2f", commission) + "\n";
+    }
+
+    public String computeLifeCommission() {
+        if (lifePolicy == null) {
+            return "No life policy entered.";
+        }
+        double commission = lifePolicy.computeCommission();
+        return lifePolicy.toString() + "Commission: $" + String.format("%,.2f", commission) + "\n";
+    }
+}
+
+Driver.java
+import java.util.Scanner; 
+  
+public class Driver {
+    private static Scanner scanner = new Scanner(System.in);
+    private static CommissionCalculator calc = new CommissionCalculator(); 
+ 
+    public static void main(String[] args) {
+        try {
+            while (true) {
+                displayMenu();
+                try {
+                    int choice = Integer.parseInt(scanner.nextLine());
+                    switch (choice) {
+                        case 1:
+                            enterAutoInsurancePolicy(); 
+                            break;
+                        case 2:
+                            enterHomeInsurancePolicy();
+                            break;
+                        case 3:
+                            enterLifeInsurancePolicy();
+                            break;
+                        case 4:
+                            System.out.println(calc.computeAutoCommission());
+                            break;
+                        case 5:
+                            System.out.println(calc.computeHomeCommission());
+                            break;
+                        case 6:
+                            System.out.println(calc.computeLifeCommission());
+                            break;
+                        case 7:
+                            System.out.println("Exiting Parkland Insurance Application...");
+                            return;
+                        default:
+                            System.out.println("Invalid choice. Please enter a number between 1 and 7.");
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid number.");
+                }
+            }
+        } finally {
+            scanner.close();
+        }
+    }
+  
+    private static void displayMenu() {
+        System.out.println("Please select an option:");
+        System.out.println("1. Enter auto insurance policy");
+        System.out.println("2. Enter home insurance policy");
+        System.out.println("3. Enter life insurance policy");
+        System.out.println("4. Compute auto commission");
+        System.out.println("5. Compute home commission");
+        System.out.println("6. Compute life commission");
+        System.out.println("7. Exit");
+    }
+
+    private static void enterAutoInsurancePolicy() {
+        System.out.println("Enter first name of insured: ");
+        String firstName = scanner.nextLine().trim();
+        System.out.println("Enter last name of insured: ");
+        String lastName = scanner.nextLine().trim();
+        System.out.println("Enter make of vehicle: ");
+        String make = scanner.nextLine().trim();
+        System.out.println("Enter model of vehicle: ");
+        String model = scanner.nextLine().trim();
+        System.out.println("Enter amount of liability: ");
+        double liability = Double.parseDouble(scanner.nextLine().trim());
+        System.out.println("Enter amount of collision: ");
+        double collision = Double.parseDouble(scanner.nextLine().trim());
+        calc.setAutoPolicy(new Auto(firstName, lastName, make, model, liability, collision));
+    }
+
+    private static void enterHomeInsurancePolicy() {
+        System.out.println("Enter first name of insured: ");
+        String firstName = scanner.nextLine().trim();
+        System.out.println("Enter last name of insured: ");
+        String lastName = scanner.nextLine().trim();
+        System.out.println("Enter house square footage: ");
+        int footage = Integer.parseInt(scanner.nextLine().trim());
+        System.out.println("Enter amount of dwelling: ");
+        double dwelling = Double.parseDouble(scanner.nextLine().trim());
+        System.out.println("Enter amount of contents: ");
+        double contents = Double.parseDouble(scanner.nextLine().trim());
+        System.out.println("Enter amount of liability: ");
+        double liability = Double.parseDouble(scanner.nextLine().trim());
+        calc.setHomePolicy(new Home(firstName, lastName, footage, dwelling, contents, liability));
+    }
+
+    private static void enterLifeInsurancePolicy() {
+        System.out.println("Enter first name of insured: ");
+        String firstName = scanner.nextLine().trim();
+        System.out.println("Enter last name of insured: ");
+        String lastName = scanner.nextLine().trim();
+        System.out.println("Enter age of insured: ");
+        int age = Integer.parseInt(scanner.nextLine().trim());
+        System.out.println("Enter amount of term: ");
+        double term = Double.parseDouble(scanner.nextLine().trim());
+        calc.setLifePolicy(new Life(firstName, lastName, age, term));
+    }
+}
+
+Home.java
+public class Home {
+    private String firstName;
+    private String lastName;
+    private int footage;
+    private double dwelling;
+    private double contents;
+    private double liability;
+
+    public Home(String firstName, String lastName, int footage, double dwelling, double contents, double liability) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.footage = footage;
+        this.dwelling = dwelling;
+        this.contents = contents;
+        this.liability = liability;
+    }
+
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public int getFootage() { return footage; }
+    public double getDwelling() { return dwelling; }
+    public double getContents() { return contents; }
+    public double getLiability() { return liability; }
+
+    @Override
+    public String toString() {
+        return "Home Policy\n-----------\n" +
+                "Name: " + firstName + " " + lastName + "\n" +
+                "Footage: " + footage + "\n" +
+                "Dwelling: $" + String.format("%,.2f", dwelling) + "\n" +
+                "Contents: $" + String.format("%,.2f", contents) + "\n" +
+                "Liability: $" + String.format("%,.2f", liability) + "\n";
+    }
+
+    public double computeCommission() {
+        return dwelling * 0.05 + contents * 0.1 + liability * 0.15;
+    }
+}
+
+Life.java
+public class Life {
+    private String firstName;
+    private String lastName;
+    private int age;
+    private double term;
+
+    public Life(String firstName, String lastName, int age, double term) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.term = term;
+    }
+
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
+    public int getAge() { return age; }
+    public double getTerm() { return term; }
+
+    @Override
+    public String toString() {
+        return "Life Policy\n-----------\n" +
+                "Name: " + firstName + " " + lastName + "\n" +
+                "Age: " + age + "\n" +
+                "Term: $" + String.format("%,.2f", term) + "\n";
+    }
+
+    public double computeCommission() {
+        return term * 0.2;
+    }
+}
+
+Policy.java 
+public abstract class Policy {
+    protected String firstName;
+    protected String lastName;
+
+    public Policy(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + firstName + " " + lastName + "\n";
+    }
+
+    // Abstract method for commission calculation
+    public abstract double computeCommission();
+}
