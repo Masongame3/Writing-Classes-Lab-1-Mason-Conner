@@ -1,0 +1,289 @@
+Auto.java
+
+public class Auto extends Policy {
+    private String make;
+    private String model;
+    private double liability;
+    private double collision;
+
+    public Auto(String firstName, String lastName, String make, String model, double liability, double collision) {
+        super(firstName, lastName);
+        this.make = make;
+        this.model = model;
+        this.liability = liability;
+        this.collision = collision;
+    }
+
+    public String getMake() { return make; }
+    public String getModel() { return model; }
+    public double getLiability() { return liability; }
+    public double getCollision() { return collision; }
+
+    @Override
+    public String toString() {
+        return "Auto Policy\n-----------\n" +
+                "Name: " + firstName + " " + lastName + "\n" +
+                "Make: " + make + "\n" +
+                "Model: " + model + "\n" +
+                "Liability: $" + String.format("%,.2f", liability) + "\n" +
+                "Collision: $" + String.format("%,.2f", collision) + "\n";
+    }
+
+    @Override
+    public double computeCommission() {
+        return liability * 0.1 + collision * 0.2;
+    }
+}
+
+CommissionCalculator.java
+
+import java.util.ArrayList; 
+
+public class CommissionCalculator {
+    private ArrayList<Policy> policies;
+
+    public CommissionCalculator() {
+        this.policies = new ArrayList<Policy>();
+    }
+
+    // Method to add a policy to the list
+    public void addPolicy(Policy policy) {
+        policies.add(policy);
+    }
+
+    // Method to print all policies and compute commission using polymorphism
+    public void printAllPolicies() {
+        if (policies.isEmpty()) {
+            System.out.println("No policies entered.");
+        } else {
+            for (Policy policy : policies) {
+                System.out.println(policy.toString());
+                System.out.println("Commission: $" + String.format("%,.2f", policy.computeCommission()));
+                System.out.println();
+            }
+        }
+    }
+}
+
+Driver.java
+
+import java.util.Scanner;
+
+public class Driver {  
+    private static final CommissionCalculator calc = new CommissionCalculator();
+
+        public static void main(String[] args) {
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(System.in);
+            boolean running = true;
+            while (running) {
+                displayMenu();
+                int choice = getUserChoice(scanner);
+                running = executeUserChoice(choice, scanner);
+            }
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
+        }
+    }
+    
+    private static void displayMenu() {
+        System.out.println("\n-----------------------------");
+        System.out.println("");
+        System.out.println("Welcome to Parkland Insurance");
+        System.out.println("");
+        System.out.println("-----------------------------");
+        System.out.println("");
+        System.out.println("Enter any of the following:");
+        System.out.println("1) Enter auto insurance policy information");
+        System.out.println("2) Enter home insurance policy information");
+        System.out.println("3) Enter life insurance policy information");
+        System.out.println("4) Print all sales entered");
+        System.out.println("5) Quit");
+    }
+
+    private static int getUserChoice(Scanner scanner) {
+        int choice = -1;
+        try {
+            choice = Integer.parseInt(scanner.nextLine().trim());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a number between 1 and 5.");
+        }
+        return choice;
+    }
+
+    private static boolean executeUserChoice(int choice, Scanner scanner) {
+        switch (choice) {
+            case 1:
+                enterAutoInsurancePolicy(scanner);
+                break;
+            case 2:
+                enterHomeInsurancePolicy(scanner);
+                break;
+            case 3:
+                enterLifeInsurancePolicy(scanner);
+                break;
+            case 4:
+                calc.printAllPolicies();
+                break;
+            case 5:
+                System.out.println("Exiting Parkland Insurance Application...");
+                return false;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
+        return true;
+    }
+
+    private static void enterAutoInsurancePolicy(Scanner scanner) {
+        try {
+            System.out.println("Enter first name of insured: ");
+            String firstName = scanner.nextLine().trim();
+            System.out.println("Enter last name of insured: ");
+            String lastName = scanner.nextLine().trim();
+            System.out.println("Enter make of vehicle: ");
+            String make = scanner.nextLine().trim();
+            System.out.println("Enter model of vehicle: ");
+            String model = scanner.nextLine().trim();
+            System.out.println("Enter amount of liability: ");
+            double liability = Double.parseDouble(scanner.nextLine().trim());
+            System.out.println("Enter amount of collision: ");
+            double collision = Double.parseDouble(scanner.nextLine().trim());
+            calc.addPolicy(new Auto(firstName, lastName, make, model, liability, collision));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number format, please try again.");
+        }
+    }
+
+    private static void enterHomeInsurancePolicy(Scanner scanner) {
+        try {
+            System.out.println("Enter first name of insured: ");
+            String firstName = scanner.nextLine().trim();
+            System.out.println("Enter last name of insured: ");
+            String lastName = scanner.nextLine().trim();
+            System.out.println("Enter house square footage: ");
+            int footage = Integer.parseInt(scanner.nextLine().trim());
+            System.out.println("Enter amount of dwelling: ");
+            double dwelling = Double.parseDouble(scanner.nextLine().trim());
+            System.out.println("Enter amount of contents: ");
+            double contents = Double.parseDouble(scanner.nextLine().trim());
+            System.out.println("Enter amount of liability: ");
+            double liability = Double.parseDouble(scanner.nextLine().trim());
+            calc.addPolicy(new Home(firstName, lastName, footage, dwelling, contents, liability));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number format, please try again.");
+        }
+    }
+
+    private static void enterLifeInsurancePolicy(Scanner scanner) {
+        try {
+            System.out.println("Enter first name of insured: ");
+            String firstName = scanner.nextLine().trim();
+            System.out.println("Enter last name of insured: ");
+            String lastName = scanner.nextLine().trim();
+            System.out.println("Enter age of insured: ");
+            int age = Integer.parseInt(scanner.nextLine().trim());
+            System.out.println("Enter amount of term: ");
+            double term = Double.parseDouble(scanner.nextLine().trim());
+            calc.addPolicy(new Life(firstName, lastName, age, term));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid number format, please try again.");
+        }
+    }
+}
+
+Home.java
+
+public class Home extends Policy {
+    private int footage;
+    private double dwelling;
+    private double contents;
+    private double liability;
+
+    public Home(String firstName, String lastName, int footage, double dwelling, double contents, double liability) {
+        super(firstName, lastName);
+        this.footage = footage;
+        this.dwelling = dwelling;
+        this.contents = contents;
+        this.liability = liability;
+    }
+
+    public int getFootage() { return footage; }
+    public double getDwelling() { return dwelling; }
+    public double getContents() { return contents; }
+    public double getLiability() { return liability; }
+
+    @Override
+    public String toString() {
+        return "Home Policy\n-----------\n" +
+                "Name: " + firstName + " " + lastName + "\n" +
+                "Footage: " + footage + "\n" +
+                "Dwelling: $" + String.format("%,.2f", dwelling) + "\n" +
+                "Contents: $" + String.format("%,.2f", contents) + "\n" +
+                "Liability: $" + String.format("%,.2f", liability) + "\n";
+    }
+
+    @Override
+    public double computeCommission() {
+        return dwelling * 0.05 + contents * 0.1 + liability * 0.15;
+    }
+}
+
+public class Life extends Policy {
+    private int age;
+    private double term;
+
+    public Life(String firstName, String lastName, int age, double term) {
+        super(firstName, lastName);
+        this.age = age;
+        this.term = term;
+    }
+
+    public int getAge() { return age; }
+    public double getTerm() { return term; }
+
+    @Override
+    public String toString() {
+        return "Life Policy\n-----------\n" +
+                "Name: " + firstName + " " + lastName + "\n" +
+                "Age: " + age + "\n" +
+                "Term: $" + String.format("%,.2f", term) + "\n";
+    }
+
+    @Override
+    public double computeCommission() {
+        return term * 0.2;
+    }
+}
+
+Policy.java
+
+public abstract class Policy {
+    protected String firstName;
+    protected String lastName;
+
+    public Policy(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + firstName + " " + lastName + "\n";
+    }
+
+    // Abstract method for commission calculation
+    public abstract double computeCommission();
+}
