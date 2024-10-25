@@ -1,0 +1,54 @@
+public interface Priority {  
+    void setPriority(int priority);
+    int getPriority();
+}
+
+ class Task implements Priority { 
+    private String taskName;
+    private int priority;
+    
+    public Task(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public void setPriority(int priority) {
+        if (priority < 1 || priority > 5) {
+            throw new IllegalArgumentException("Priority must be between 1 and 5.");
+        }
+        this.priority = priority;
+    }
+
+     
+     public int getPriority() {
+         return priority;
+     }
+
+    @Override
+    public String toString() {
+        return String.format("%-20s priority: %d", taskName, priority);
+    }
+}
+
+ class TaskList {
+    public static void main(String[] args) {
+        Task task1 = new Task("Attend class");
+        Task task2 = new Task("Homework");
+        Task task3 = new Task("Exercise");
+        Task task4 = new Task("Eat breakfast");
+        Task task5 = new Task("Eat lunch");
+        
+        task1.setPriority(1);
+        task2.setPriority(2);
+        task3.setPriority(3);
+        task4.setPriority(4);
+        task5.setPriority(5);
+
+        System.out.println("Priority Task List");
+        System.out.println("------------------");
+        System.out.println(task1);
+        System.out.println(task2);
+        System.out.println(task3);
+        System.out.println(task4);
+        System.out.println(task5);
+    }
+}
