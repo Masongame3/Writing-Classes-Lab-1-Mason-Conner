@@ -1,0 +1,102 @@
+import java.util.Scanner;
+
+// Student class implementing Comparable 
+class Student implements Comparable<Student> {
+    private String firstName;
+    private String lastName; 
+    private int score;
+
+    public Student(String firstName, String lastName, int score) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.score = score;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int compareTo(Student other) {
+        return Integer.compare(this.score, other.score); // Sort in descending order
+    }
+ 
+    @Override
+    public String toString() {
+        return firstName + " " + lastName + " " + score;
+    }
+}
+
+// Sorting class with selection sort method
+class Sorting {
+    public static void selectionSort(Student[] students) {
+        int n = students.length;
+        for (int i = 0; i < n - 1; i++) {
+            int maxIndex = i;
+            for (int j = i + 1; j < n; j++) {
+                if (students[j].compareTo(students[maxIndex]) > 0) {
+                    maxIndex = j;
+                }
+            }
+            Student temp = students[maxIndex];
+            students[maxIndex] = students[i];
+            students[i] = temp;
+        }
+    }
+}
+
+// Gradebook class to manage students
+class Gradebook {
+    private Student[] students;
+    private int count;
+
+    public Gradebook(int capacity) {
+        students = new Student[capacity];
+        count = 0;
+    }
+
+    public void addStudent(Student student) {
+        if (count < students.length) {
+            students[count++] = student;
+        } else {
+            System.out.println("Gradebook is full.");
+        }
+    }
+
+    public void sortStudents() {
+        Sorting.selectionSort(students);
+    }
+
+    public void printStudents() {
+        for (int i = 0; i < count; i++) {
+            System.out.println(students[i]);
+        }
+    }
+}
+
+// Main class for driving the program
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Gradebook gradebook = new Gradebook(5);
+
+        for (int i = 0; i < 5; i++) {
+            System.out.print("Enter student <firstName> <lastName> <score>: ");
+            String firstName = scanner.next();
+            String lastName = scanner.next();
+            int score = scanner.nextInt();
+            Student student = new Student(firstName, lastName, score);
+            gradebook.addStudent(student);
+        }
+
+        gradebook.sortStudents();
+        gradebook.printStudents();
+    }
+}
