@@ -1,0 +1,48 @@
+import java.util.Scanner;
+ 
+// Class representing a rational number
+class RationalNumber {
+    private int numerator;
+    private int denominator;
+ 
+    // Constructor to initialize fields
+    public RationalNumber(int numerator, int denominator) {
+        this.numerator = numerator;
+        this.denominator = denominator;
+    }
+
+    // Recursive method to compute the greatest common divisor
+    public int gcd(int a, int b) {
+        if (b == 0) {
+            return a;
+        }
+        return gcd(b, a % b);
+    }
+
+    // Method to return the GCD of the numerator and denominator
+    public int getGCD() {
+        return gcd(numerator, denominator);
+    }
+}
+
+// Driver class
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Prompt the user for the numerator
+        System.out.print("Enter positive integer as numerator: ");
+        int numerator = scanner.nextInt();
+
+        // Prompt the user for the denominator
+        System.out.print("Enter positive integer as denominator: ");
+        int denominator = scanner.nextInt();
+
+        // Create a RationalNumber object
+        RationalNumber rationalNumber = new RationalNumber(numerator, denominator);
+
+        // Compute and print the GCD
+        int gcd = rationalNumber.getGCD();
+        System.out.println("Greatest common denominator of " + numerator + "/" + denominator + " is " + gcd);
+    }
+}
