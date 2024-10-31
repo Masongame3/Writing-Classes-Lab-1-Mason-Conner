@@ -1,0 +1,74 @@
+import java.util.Scanner; 
+
+class CurrencyCalculator {
+    private int tenDollarBills;
+    private int fiveDollarBills;
+    private int oneDollarBills;
+    private int quarters;
+    private int dimes;
+    private int nickels;
+    private int pennies;
+
+    // Calculate method to determine the fewest number of bills and coins
+    public void calculate(double amount) {
+        // Convert the amount to cents to avoid floating-point issues
+        int cents = (int) Math.round(amount * 100);
+
+        tenDollarBills = cents / 1000;
+        cents %= 1000;
+
+        fiveDollarBills = cents / 500;
+        cents %= 500;
+
+        oneDollarBills = cents / 100;
+        cents %= 100;
+
+        quarters = cents / 25;
+        cents %= 25;
+
+        dimes = cents / 10;
+        cents %= 10;
+
+        nickels = cents / 5;
+        cents %= 5;
+
+        pennies = cents;
+    }
+
+    // Method to print the result
+    public void printResult() {
+        System.out.println(tenDollarBills + " ten dollar bills");
+        System.out.println(fiveDollarBills + " five dollar bills");
+        System.out.println(oneDollarBills + " one dollar bills");
+        System.out.println(quarters + " quarters");
+        System.out.println(dimes + " dimes");
+        System.out.println(nickels + " nickels");
+        System.out.println(pennies + " pennies");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        CurrencyCalculator calculator = new CurrencyCalculator();
+
+        while (true) {
+            System.out.print("Enter a monetary amount (or type 'quit' to exit): ");
+            String input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("quit")) {
+                break;
+            }
+
+            try {
+                double amount = Double.parseDouble(input);
+                calculator.calculate(amount);
+                calculator.printResult();
+            } catch (NumberFormatException e) {
+                System.out.println("EXCEPTION: Invalid input");
+            }
+        }
+
+        scanner.close();
+    }
+}
