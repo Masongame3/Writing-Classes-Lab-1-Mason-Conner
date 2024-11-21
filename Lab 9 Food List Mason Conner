@@ -1,0 +1,256 @@
+import java.util.Random;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+
+class Food {
+    private String name;
+    private String foodGroup;
+    private int calories;
+    private double dailyPercentage;
+    private Food next;
+
+    public Food(String name, String foodGroup, int calories, double dailyPercentage) {
+        this.name = name;
+        this.foodGroup = foodGroup;
+        this.calories = calories;
+        this.dailyPercentage = dailyPercentage;
+        this.next = null;
+    }
+
+    public String getName() { return name; }
+    public String getFoodGroup() { return foodGroup; }
+    public int getCalories() { return calories; }
+    public double getDailyPercentage() { return dailyPercentage; }
+    public Food getNext() { return next; }
+    public void setNext(Food next) { this.next = next; }
+
+    @Override
+    public String toString() {
+        return String.format("%-20s %-15s %-15d %-15.2f", name, foodGroup, calories, dailyPercentage);
+    }
+}
+
+class FoodList {
+    private Food head;
+
+    public Food getHead() { // Add this method to return the head of the list
+        return head;
+    }
+
+    public Food findFoodByName(String name) {
+        Food current = head;
+        while (current != null) {
+            if (current.getName().equalsIgnoreCase(name)) {
+                return current;
+            }
+            current = current.getNext();
+        }
+        return null;
+    }
+
+    public void addFood(Food food) {
+        if (head == null) {
+            head = food;
+        } else {
+            Food current = head;
+            while (current.getNext() != null) {
+                current = current.getNext();
+            }
+            current.setNext(food);
+        }
+    }
+
+    public void listFoods() {
+        if (head == null) {
+            System.out.println("No foods available.");
+            return;
+        }
+        
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("Name                Food Group          Calories            Daily percentage");
+        
+        System.out.println("-----------------------------------------------------------------------");
+        Food current = head;
+        while (current != null) {
+            System.out.println(current);
+            current = current.getNext();
+        }
+    }
+
+    public void loadFoodsFromFile(String filename) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(" ");
+                if (parts.length == 4) {
+                    String name = parts[0];
+                    String foodGroup = parts[1];
+                    int calories = Integer.parseInt(parts[2]);
+                    double dailyPercentage = Double.parseDouble(parts[3]);
+                    addFood(new Food(name, foodGroup, calories, dailyPercentage));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("An error occurred while reading the file: " + e.getMessage());
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        FoodList foodList = new FoodList();
+        foodList.loadFoodsFromFile("src/main/java/food.txt");
+
+        while (true) {
+            System.out.println("---------------------------------");
+            System.out.println("Welcome to Parkland Meal Selector");
+            System.out.println("---------------------------------");
+            System.out.println("Please select from the following");
+            System.out.println("1 - List food database");
+            System.out.println("2 - Create meal by manual selection");
+            System.out.println("3 - Create meal by random selection");
+            System.out.println("4 - Remove foods high in calorie");
+            System.out.println("5 - Exit");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1:
+                    foodList.listFoods();
+                    break;
+                case 2:
+                    createManualMeal(scanner, foodList);
+                    break;
+                case 3:
+                    createRandomMeal(foodList);
+                    break;
+                case 4:
+                    listFoodsUnderCalorieLimit(scanner, foodList);
+                    break;
+                case 5:
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice, please try again.");
+            }
+        }
+    }
+
+    public static void createManualMeal(Scanner scanner, FoodList foodList) {
+        List<Food> meal = new ArrayList<Food>();
+        while (true) {
+            System.out.print("Enter food name: ");
+            String foodName = scanner.nextLine();
+            Food food = foodList.findFoodByName(foodName);
+            if (food != null) {
+                meal.add(food);
+                System.out.println(foodName + " added to your meal.");
+            } else {
+                System.out.println("Food " + foodName + " not in database, try again.");
+            }
+            System.out.print("Do you want to add more food? (y/n): ");
+            String moreFood = scanner.nextLine();
+            if (!moreFood.equalsIgnoreCase("y")) {
+                break;
+            }
+        }
+        
+        System.out.println("-----------------------------------------------------------------------");
+        
+        listMeal(meal);
+    }
+    
+    public static void listMeal(List<Food> meal) {
+        System.out.println("Your Meal:");
+        for (Food food : meal) {
+            System.out.println(food);
+        
+            System.out.println("-----------------------------------------------------------------------");
+            
+        }
+    }
+
+    public static void createRandomMeal(FoodList foodList) {
+        List<Food> meal = new ArrayList<Food>();
+        Random random = new Random();
+        Food current = foodList.getHead();
+        int totalCalories = 0;
+        double totalDailyPercentage = 0;
+        int mealCount = random.nextInt(3); // Get a random number of food between 3 and 5
+        List<Food> foodItems = new ArrayList<Food>();
+        while (current != null) {
+            foodItems.add(current);
+            current = current.getNext();
+        }
+        for (int i = 0; i < mealCount; i++) {
+            int randomIndex = random.nextInt(foodItems.size());
+            Food selectedFood = foodItems.get(randomIndex);
+            meal.add(selectedFood);
+            totalCalories += selectedFood.getCalories();
+            totalDailyPercentage += selectedFood.getDailyPercentage();
+        }
+        
+        System.out.println("-----------------------------------------------------------------------");
+        
+        System.out.println("Your selected random meal:");
+        for (Food food : meal) {
+            System.out.println(food.getName());
+        }
+        System.out.println("Total calorie count: " + totalCalories);
+        System.out.println("Total daily percentage: " + (totalDailyPercentage * 100) + "%");
+
+        System.out.println("-----------------------------------------------------------------------");
+    
+    }
+    
+public static void listFoodsUnderCalorieLimit(Scanner scanner, FoodList foodList) {
+        System.out.print("Enter calorie limit: ");
+        int calorieLimit = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println("Name                Food Group          Calories            Daily percentage");
+        System.out.println("-----------------------------------------------------------------------");
+        Food current = foodList.getHead();
+        while (current != null) {
+            if (current.getCalories() <= calorieLimit) {
+                System.out.println(current);
+            }
+            current = current.getNext();
+        }
+    }
+}
+
+Text File
+
+Steak protein 400 0.3 
+Salmon protein 600 0.2
+Strawberries fruit 200 0.02
+Asparagus vegetable 32 0.1
+Salad vegetable 100 0.2
+Spaghetti carbs 200 0.1
+Potato carbs 200 0.2
+Hamburger protein 300 0.2
+Milk dairy 200 0.1
+Yogurt dairy 200 0.2
+Chicken protein 100 .15
+Peas vegetable 75 .03
+Bread carbs 100 .1
+Cream dairy 300 .05
+Brusselsprouts vegetable 200 .4
+Beans vegetable 340 .25
+Ham protein 200 .35
+Corn vegetable 130 .43
+Bacon protein 450 .35
+Cheese dairy 150 .35
+Shrimp protein 300 .20
+Cookie carbs 300 .02
+Eggs protein 100 .1
+Peanuts protein 200 .3
+Cereal carbs 100 .1
+Zucchini vegetable 200 .2
+Carrots vegetable 400 .4
